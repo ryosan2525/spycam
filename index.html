@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="styles.css"> <!-- CSSファイルをリンク -->
 </head> 
 <body> 
+    <nav class="menu">
+        <button id="startButton">録画開始</button>
+        <button id="stopButton" disabled>録画停止</button>
+    </nav>
+    <br> 
     <div class="container">
         <div class="overlay">
             <h1>ウェブ記事のタイトル</h1>
@@ -16,11 +21,7 @@
         </div>
         <video id="preview" autoplay muted playsinline></video> 
     </div>
-    <br> 
-    <div class="menu-bar">
-        <button id="startButton">録画開始</button>
-        <button id="stopButton" disabled>録画停止</button>
-    </div>
+
     <br> 
     <input type="range" id="opacitySlider" min="0" max="100" value="100"> <!-- スライダーの追加 --> 
     <script src="script.js"></script> 

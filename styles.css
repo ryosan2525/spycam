@@ -31,15 +31,24 @@ body {
     z-index: 1; /* 背景として表示 */
 }
 
-.menu-bar {
-    margin: 10px 0;
-    text-align: center;
-    z-index: 3; /* 背景として表示 */
-
+.menu {
+    background-color: #333; /* メニューバーの背景色 */
+    padding: 10px; /* パディング */
+    text-align: center; /* 中央揃え */
+    z-index: 3;
 }
 
-.menu-bar button {
-    margin: 0 10px; /* ボタン間にマージンを追加 */
-    padding: 10px 20px; /* ボタンにパディングを追加 */
-    font-size: 16px; /* フォントサイズを設定 */
+.menu button {
+    background-color: #4CAF50; /* ボタンの背景色 */
+    color: white; /* ボタンの文字色 */
+    border: none; /* ボーダーをなし */
+    padding: 10px 20px; /* ボタンのパディング */
+    margin: 5px; /* ボタン間のマージン */
+    cursor: pointer; /* カーソルをポインターに */
+    border-radius: 5px; /* ボタンの角を丸く */
+}
+
+.menu button:disabled {
+    background-color: #555; /* 無効ボタンの背景色 */
+    cursor: not-allowed; /* カーソルを無効に */
 }
