@@ -17,7 +17,7 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
         option.text = device.label || `カメラ ${index + 1}`;
         cameraSelect.appendChild(option);
     });
-    
+
     // デフォルトで最初のカメラ（外カメラ）を選択して表示
     startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
 });
@@ -67,7 +67,6 @@ function startCamera(deviceId, facingMode = "environment") {
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
-    // リンクを作成してダウンロードを実行
     const a = document.createElement('a');
     a.href = url;
     a.download = 'recording.webm'; 
@@ -79,20 +78,16 @@ function downloadRecording(blob) {
     }, 100); // 少し待ってから削除
 }
 
-
 // 録画開始
 startButton.addEventListener('click', () => {
-    if (mediaRecorder) {
-        if (mediaRecorder.state === "inactive") {
-            mediaRecorder.start();
-            startButton.disabled = true;
-            stopButton.disabled = false;
-        } else {
-            console.warn('すでに録画中です。');
-        }
+    if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        const deviceId = cameraSelect.value; // 選択されたカメラのIDを取得
+        startCamera(deviceId); // カメラを開始
+        mediaRecorder.start(); // 録画を開始
+        startButton.disabled = true;
+        stopButton.disabled = false;
     }
 });
-
 
 // 録画停止
 stopButton.addEventListener('click', () => {
@@ -103,4 +98,3 @@ stopButton.addEventListener('click', () => {
         stopButton.disabled = true;
     }
 });
-
