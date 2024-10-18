@@ -35,3 +35,9 @@ body {
     margin: 10px 0;
     text-align: center;
 }
+
+.menu-bar button {
+    margin: 0 10px; /* ボタン間にマージンを追加 */
+    padding: 10px 20px; /* ボタンにパディングを追加 */
+    font-size: 16px; /* フォントサイズを設定 */
+}
