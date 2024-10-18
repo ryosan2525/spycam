@@ -4,45 +4,58 @@ const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const recordedVideo = document.getElementById('recordedVideo');
 const downloadLink = document.getElementById('downloadLink');
+const cameraSelect = document.getElementById('cameraSelect');
 
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
 let ffmpeg;
 
-// カメラ映像を取得する関数
-function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: { deviceId, facingMode: { exact: facingMode } }, audio: true })
-    .then(stream => {
-        preview.srcObject = stream;
-        currentStream = stream;
+// 利用可能なカメラデバイスを取得
+async function getCameraDevices() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-        // MediaRecorderの設定
-        mediaRecorder = new MediaRecorder(stream);
-        
-        // 録画データを収集
-        mediaRecorder.ondataavailable = event => {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-        };
-
-        // 録画が停止したときに、動画ファイルを作成
-        mediaRecorder.onstop = async () => {
-            const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const webMUrl = URL.createObjectURL(recordedBlob);
-            
-            recordedVideo.src = webMUrl;
-            recordedVideo.controls = true;
-            recordedVideo.play();
-
-            // ffmpeg.jsを使用してwebMをMP4に変換
-            await convertToMP4(recordedBlob);
-        };
-    })
-    .catch(error => {
-        console.error('カメラの使用に失敗しました:', error);
+    videoDevices.forEach(device => {
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+        option.textContent = device.label || `Camera ${cameraSelect.length + 1}`;
+        cameraSelect.appendChild(option);
     });
+}
+
+// カメラ映像を取得する関数
+async function startCamera(deviceId) {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { deviceId: deviceId ? { exact: deviceId } : undefined },
+        audio: true 
+    });
+
+    preview.srcObject = stream;
+    currentStream = stream;
+
+    // MediaRecorderの設定
+    mediaRecorder = new MediaRecorder(stream);
+    
+    // 録画データを収集
+    mediaRecorder.ondataavailable = event => {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    };
+
+    // 録画が停止したときに、動画ファイルを作成
+    mediaRecorder.onstop = async () => {
+        const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        const webMUrl = URL.createObjectURL(recordedBlob);
+        
+        recordedVideo.src = webMUrl;
+        recordedVideo.controls = true;
+        recordedVideo.play();
+
+        // ffmpeg.jsを使用してwebMをMP4に変換
+        await convertToMP4(recordedBlob);
+    };
 }
 
 // 録画開始
@@ -90,6 +103,15 @@ async function convertToMP4(blob) {
     downloadLink.style.display = 'block'; // ダウンロードリンクを表示
 }
 
-window.onload = () => {
-    startCamera();
+// デバイス選択時にカメラを起動
+cameraSelect.addEventListener('change', () => {
+    const selectedDeviceId = cameraSelect.value;
+    startCamera(selectedDeviceId);
+});
+
+// ページ読み込み時にカメラデバイスを取得
+window.onload = async () => {
+    await getCameraDevices();
+    const firstCamera = cameraSelect.value;
+    startCamera(firstCamera);
 };
