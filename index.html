@@ -1,46 +1,21 @@
-<!Doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Camera Test</title>
-    <script type="text/javascript">
-
-
-      function videoStart(){
-        var constraints = { audio: false, video: { facingMode: "environment" } };
-
-        navigator.mediaDevices.getUserMedia( constraints )
-        .then(
-          function( stream ) {
-            var video = document.querySelector( 'video' );
-            video.srcObject = stream;
-            video.onloadedmetadata = function( e ) {
-              video.play();
-            };
-          }
-        )
-      };
-
-
-      function videoStop(){
-        var constraints = { audio: false, video: { facingMode: "environment" } };
-
-        navigator.mediaDevices.getUserMedia( constraints )
-        .then(
-          function( stream ) {
-            var video = document.querySelector( 'video' );
-            video.srcObject = stream;
-            video.onloadedmetadata = function( e ) {
-              stream.getVideoTracks()[0].stop();
-            };
-          }
-        )
-      };
-
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to record a video with JavaScript</title>
   </head>
   <body>
-    <div><video id="myVideo" autoplay="1" ></video></div> 
-    <div><button type="button" onclick="videoStart()">撮影</button>　
-    <button type="button" onclick="videoStop()">停止</button></div>
+    <div>
+      <button type="button" id="buttonStart">Start</button>
+      <button type="button" id="buttonStop" disabled>Stop</button>
+    </div>
+    <div>
+      <video autoplay muted playsinline id="videoLive"></video>
+    </div>
+    <div>
+      <video controls playsinline id="videoRecorded"></video>
+    </div>
+    <script src="script.js"></script>
   </body>
 </html>
