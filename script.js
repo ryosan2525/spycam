@@ -18,7 +18,6 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
         cameraSelect.appendChild(option);
     });
     
-    // デフォルトで最初のカメラ（外カメラ）を選択して表示
     startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
 });
 
@@ -54,11 +53,9 @@ function startCamera(deviceId, facingMode = "environment") {
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            
-            // MP4形式に変換し、ダウンロード
-            const mp4Blob = await convertToMp4(recordedBlob);
-            downloadMp4(mp4Blob);
-            
+
+            // MP4形式に変換
+            await convertToMP4(recordedBlob);
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
@@ -67,26 +64,27 @@ function startCamera(deviceId, facingMode = "environment") {
     });
 }
 
-// WebMをMP4に変換する関数
-async function convertToMp4(webmBlob) {
+// MP4形式に変換する関数
+async function convertToMP4(webmBlob) {
     const { createFFmpeg, fetchFile } = FFmpeg;
     const ffmpeg = createFFmpeg({ log: true });
-    
+
     await ffmpeg.load();
     ffmpeg.FS('writeFile', 'recording.webm', await fetchFile(webmBlob));
-    await ffmpeg.run('-i', 'recording.webm', 'recording.mp4');
-    
-    const mp4Data = ffmpeg.FS('readFile', 'recording.mp4');
-    return new Blob([mp4Data.buffer], { type: 'video/mp4' });
+    await ffmpeg.run('-i', 'recording.webm', 'output.mp4');
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+
+    const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+    downloadRecording(mp4Blob, 'recording.mp4'); // MP4形式の録画をダウンロード
 }
 
-// MP4をダウンロードする関数
-function downloadMp4(blob) {
+// 録画をダウンロードする関数
+function downloadRecording(blob, filename) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'recording.mp4'; // ダウンロードするファイル名
+    a.download = filename; // ダウンロードするファイル名
     document.body.appendChild(a);
     a.click();
     URL.revokeObjectURL(url);
