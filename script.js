@@ -91,19 +91,6 @@ function downloadMp4(blob) {
     URL.revokeObjectURL(url);
 }
 
-
-// 録画をダウンロードする関数
-function downloadRecording(blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'recording.webm'; // ダウンロードするファイル名
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
 // 録画開始
 startButton.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state === "inactive") {
