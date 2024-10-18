@@ -75,34 +75,18 @@ function downloadRecording(blob) {
     URL.revokeObjectURL(url);
 }
 
-// 録画開始（タッチ対応）
-startButton.addEventListener('touchstart', () => {
-    if (mediaRecorder) {
-        mediaRecorder.start();
-        startButton.disabled = true;
-        stopButton.disabled = false;
-    }
-});
-
+// 録画開始
 startButton.addEventListener('click', () => {
-    if (mediaRecorder) {
+    if (mediaRecorder && mediaRecorder.state === "inactive") {
         mediaRecorder.start();
         startButton.disabled = true;
         stopButton.disabled = false;
     }
 });
 
-// 録画停止（タッチ対応）
-stopButton.addEventListener('touchstart', () => {
-    if (mediaRecorder) {
-        mediaRecorder.stop();
-        startButton.disabled = false;
-        stopButton.disabled = true;
-    }
-});
-
+// 録画停止
 stopButton.addEventListener('click', () => {
-    if (mediaRecorder) {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         startButton.disabled = false;
         stopButton.disabled = true;
