@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>スマホ対応動画撮影</title>
     <style>
-        /* スマホ用のレイアウト調整 */
         @media only screen and (max-width: 600px) {
             video {
                 width: 100%;
@@ -37,6 +36,8 @@
     <button id="stopButton" disabled>録画停止</button>
     <br>
     <video id="recordedVideo" controls></video>
+    <br>
+    <a id="downloadLink" href="#" download="video.webm" style="display:none">録画をダウンロード</a>
 
     <script src="script.js"></script>
 </body>

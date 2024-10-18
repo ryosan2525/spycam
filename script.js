@@ -2,6 +2,7 @@ const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const recordedVideo = document.getElementById('recordedVideo');
+const downloadLink = document.getElementById('downloadLink');
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -33,13 +34,18 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        // 録画が停止したらビデオを再生
+        // 録画が停止したらビデオを再生し、ダウンロードリンクを作成
         mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
             recordedVideo.controls = true;  // コントロールを表示
             recordedVideo.play();
             recordedChunks = [];  // 次の録画のためにリセット
+
+            // ダウンロードリンクを生成
+            const downloadUrl = URL.createObjectURL(recordedBlob);
+            downloadLink.href = downloadUrl;
+            downloadLink.style.display = 'block';  // ダウンロードリンクを表示
         };
     })
     .catch(error => {
