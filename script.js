@@ -51,10 +51,10 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            downloadRecording(recordedBlob); // 録画をダウンロード
+            await convertToMp4(recordedBlob); // 録画をMP4形式に変換
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
@@ -62,6 +62,35 @@ function startCamera(deviceId, facingMode = "environment") {
         console.error('カメラの使用に失敗しました:', error);
     });
 }
+
+// WebMをMP4に変換する関数
+async function convertToMp4(webmBlob) {
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+    
+    await ffmpeg.load();
+    ffmpeg.FS('writeFile', 'recording.webm', await fetchFile(webmBlob));
+    await ffmpeg.run('-i', 'recording.webm', 'recording.mp4');
+    
+    const mp4Data = ffmpeg.FS('readFile', 'recording.mp4');
+    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+    
+    // MP4をダウンロードする
+    downloadMp4(mp4Blob);
+}
+
+// MP4をダウンロードする関数
+function downloadMp4(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'recording.mp4'; // ダウンロードするファイル名
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
