@@ -3,7 +3,6 @@ const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const cameraSelect = document.getElementById('cameraSelect');
 const recordedVideo = document.getElementById('recordedVideo');
-const downloadLink = document.getElementById('downloadLink');
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -18,7 +17,7 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
         option.text = device.label || `カメラ ${index + 1}`;
         cameraSelect.appendChild(option);
     });
-
+    
     // デフォルトで最初のカメラ（外カメラ）を選択して表示
     startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
 });
@@ -52,17 +51,10 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        // 録画が停止したときに、動画ファイルを作成
-        mediaRecorder.onstop = async () => {
+        mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const webMUrl = URL.createObjectURL(recordedBlob);
-            
-            recordedVideo.src = webMUrl;
-            recordedVideo.controls = true;
-            recordedVideo.play();
-
-            // ffmpeg.jsを使用してwebMをMP4に変換
-            await convertToMP4(recordedBlob);
+            recordedVideo.src = URL.createObjectURL(recordedBlob);
+            downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
@@ -71,28 +63,16 @@ function startCamera(deviceId, facingMode = "environment") {
     });
 }
 
-// MP4形式に変換
-async function convertToMP4(blob) {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg({ log: true });
-    await ffmpeg.load();
-    
-    // Blobをffmpeg.jsに渡す
-    ffmpeg.FS('writeFile', 'video.webm', await fetchFile(blob));
-    
-    // WebMをMP4に変換
-    await ffmpeg.run('-i', 'video.webm', 'output.mp4');
-    
-    // 変換後のファイルを取得
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    
-    // MP4ファイルをダウンロードリンクに設定
-    const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
-    const mp4Url = URL.createObjectURL(mp4Blob);
-
-    downloadLink.href = mp4Url;
-    downloadLink.style.display = 'block'; // ダウンロードリンクを表示
-    downloadLink.download = 'recording.mp4'; // ダウンロードするファイル名
+// 録画をダウンロードする関数
+function downloadRecording(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'recording.webm'; // ダウンロードするファイル名
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // 録画開始
@@ -112,3 +92,26 @@ stopButton.addEventListener('click', () => {
         stopButton.disabled = true;
     }
 });
+
+
+// MP4形式に変換
+async function convertToMP4(blob) {
+    ffmpeg = createFFmpeg({ log: true });
+    await ffmpeg.load();
+    
+    // Blobをffmpeg.jsに渡す
+    ffmpeg.FS('writeFile', 'video.webm', await fetchFile(blob));
+    
+    // WebMをMP4に変換
+    await ffmpeg.run('-i', 'video.webm', 'output.mp4');
+    
+    // 変換後のファイルを取得
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    
+    // MP4ファイルをダウンロードリンクに設定
+    const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const mp4Url = URL.createObjectURL(mp4Blob);
+
+    downloadLink.href = mp4Url;
+    downloadLink.style.display = 'block'; // ダウンロードリンクを表示
+}
