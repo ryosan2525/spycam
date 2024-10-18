@@ -92,26 +92,3 @@ stopButton.addEventListener('click', () => {
         stopButton.disabled = true;
     }
 });
-
-
-// MP4形式に変換
-async function convertToMP4(blob) {
-    ffmpeg = createFFmpeg({ log: true });
-    await ffmpeg.load();
-    
-    // Blobをffmpeg.jsに渡す
-    ffmpeg.FS('writeFile', 'video.webm', await fetchFile(blob));
-    
-    // WebMをMP4に変換
-    await ffmpeg.run('-i', 'video.webm', 'output.mp4');
-    
-    // 変換後のファイルを取得
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    
-    // MP4ファイルをダウンロードリンクに設定
-    const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
-    const mp4Url = URL.createObjectURL(mp4Blob);
-
-    downloadLink.href = mp4Url;
-    downloadLink.style.display = 'block'; // ダウンロードリンクを表示
-}
