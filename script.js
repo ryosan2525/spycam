@@ -54,12 +54,25 @@ function startCamera(deviceId, facingMode = "environment") {
         mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
+            downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
     .catch(error => {
         console.error('カメラの使用に失敗しました:', error);
     });
+}
+
+// 録画をダウンロードする関数
+function downloadRecording(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'recording.webm'; // ダウンロードするファイル名
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // 録画開始（タッチ対応）
