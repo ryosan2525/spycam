@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動画録画テスト</title>
+    <title>iPhone対応動画録画</title>
 </head>
 <body>
-    <h1>1</h1>
+    <h1>2</h1>
     <video id="preview" autoplay muted playsinline></video>
     <br>
     <button id="startButton">録画開始</button>
@@ -14,8 +14,9 @@
     <br>
     <video id="recordedVideo" controls></video>
     <br>
-    <a id="downloadLink" href="#" download="video.webm" style="display:none">録画をダウンロード</a>
+    <a id="downloadLink" href="#" download="video.mp4" style="display:none">録画をダウンロード</a>
 
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
