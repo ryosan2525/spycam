@@ -7,17 +7,15 @@
 </head>
 <body>
     <h1>iPhone対応動画録画</h1>
-    <label for="cameraSelect">カメラ選択:</label>
-    <select id="cameraSelect"></select>
     <video id="preview" autoplay muted playsinline></video>
     <br>
     <button id="startButton">録画開始</button>
     <button id="stopButton" disabled>録画停止</button>
     <br>
-    <a id="downloadLink" href="#" download="video.mp4" style="display:none">録画をダウンロード</a>
-    <br>
-    <br>
     <video id="recordedVideo" controls></video>
+    <br>
+    <a id="downloadLink" href="#" download="video.mp4" style="display:none">録画をダウンロード</a>
+
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
     <script src="script.js"></script>
 </body>

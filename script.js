@@ -90,7 +90,6 @@ async function convertToMP4(blob) {
     downloadLink.style.display = 'block'; // ダウンロードリンクを表示
 }
 
-// ページロード時にカメラを開始
 window.onload = () => {
     startCamera();
 };
