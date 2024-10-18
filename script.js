@@ -40,7 +40,8 @@ function startCamera(deviceId, facingMode = "environment") {
     })
     .then(stream => {
         currentStream = stream;
-        preview.srcObject = stream;
+        preview.srcObject = stream;  // ストリームをvideoに設定
+        preview.play();
 
         // 録画の設定
         mediaRecorder = new MediaRecorder(stream);
