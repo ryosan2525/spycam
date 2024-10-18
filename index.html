@@ -1,22 +1,19 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スマホ2</title>
-    
-</head>
-    <body>
-        <h1>1</h1>
-        <br>
-        <video id="preview" autoplay muted playsinline></video>
-        <br>
+<!DOCTYPE html> 
+<html lang="ja"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>スマホ2</title> 
+    <link rel="stylesheet" href="styles.css"> <!-- CSSファイルをリンク -->
+</head> 
+<body> 
+    <nav class="menu">
         <button id="startButton">録画開始</button>
         <button id="stopButton" disabled>録画停止</button>
-        <br>
-        <input type="range" id="opacitySlider" min="0" max="100" value="100"> <!-- スライダーの追加 -->
-
-        <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
-        <script src="script.js"></script>
-    </body>
+    </nav>
+    <video id="preview" autoplay muted playsinline></video> 
+    <br> 
+    <input type="range" id="opacitySlider" min="0" max="100" value="100"> <!-- スライダーの追加 --> 
+    <script src="script.js"></script> 
+</body> 
 </html>

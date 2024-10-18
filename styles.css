@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.menu {
+    background-color: #333; /* メニューバーの背景色 */
+    padding: 10px; /* パディング */
+    text-align: center; /* 中央揃え */
+}
+
+.menu button {
+    background-color: #4CAF50; /* ボタンの背景色 */
+    color: white; /* ボタンの文字色 */
+    border: none; /* ボーダーをなし */
+    padding: 10px 20px; /* ボタンのパディング */
+    margin: 5px; /* ボタン間のマージン */
+    cursor: pointer; /* カーソルをポインターに */
+    border-radius: 5px; /* ボタンの角を丸く */
+}
+
+.menu button:disabled {
+    background-color: #555; /* 無効ボタンの背景色 */
+    cursor: not-allowed; /* カーソルを無効に */
+}
