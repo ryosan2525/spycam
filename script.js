@@ -82,7 +82,7 @@ function downloadRecording(blob) {
 startButton.addEventListener('click', () => {
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
         const deviceId = cameraSelect.value; // 選択されたカメラのIDを取得
-        startCamera(deviceId); // カメラを開始
+        
         mediaRecorder.start(); // 録画を開始
         startButton.disabled = true;
         stopButton.disabled = false;
@@ -93,7 +93,7 @@ startButton.addEventListener('click', () => {
 stopButton.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
-        currentStream.getTracks().forEach(track => track.stop()); // ストリームも停止
+        
         startButton.disabled = false;
         stopButton.disabled = true;
     }
