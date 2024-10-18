@@ -13,6 +13,7 @@ opacitySlider.addEventListener('input', () => {
     preview.style.opacity = opacityValue;  // 透過度を設定
 });
 
+preview.style.opacity = 0;
 
 // 初めから外カメラ（環境カメラ）を選んで表示
 startCamera();
