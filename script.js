@@ -44,12 +44,8 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const filename = generateFilename(); // ファイル名を生成
-        
-            // ダウンロードする代わりにInfinicloudにアップロード
-            await uploadToInfinicloud(recordedBlob, filename);
-        
-            recordedChunks = []; // 次の録画のためにリセット
+            await uploadToDropbox(recordedBlob); // 録画をDropboxにアップロード
+            recordedChunks = [];  // 次の録画のためにリセット
         };
     })
     .catch(error => {
@@ -103,24 +99,35 @@ stopButton.addEventListener('click', () => {
     }
 });
 
-// Infinicloudにアップロードする関数
-async function uploadToInfinicloud(blob, filename) {
-    const url = 'https://jike.teracloud.jp/dav/' + filename; // WebDAV接続URLとファイル名を組み合わせる
-    const connectionId = 'asimania'; // あなたの接続ID
-    const password = 'ni8zHfjeDgMZx54S'; // あなたのパスワード
 
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Authorization': 'Basic ' + btoa(connectionId + ':' + password),
-            'Content-Type': 'video/webm' // ここで適切なMIMEタイプを設定
-        },
-        body: blob
-    });
+// Dropboxに録画をアップロードする関数
+async function uploadToDropbox(blob) {
+    const accessToken = 'sl.B_AttZJKtp9xrcZPShAxWZnFqIWlPdJ4ShIvY2HXmLP6mFGrjIBGTfu6w46zXq_5wMnrFD-wDGFZCfAe8GEYxIFjZfRg3Scn_T-A_WK3sOO4fk0oGyd03aOir0Vmel-8H6n7nMAnCu0x'; // ここにDropboxのアクセストークンを入力
+    const filename = generateFilename();
 
-    if (response.ok) {
-        console.log('アップロード成功:', filename);
-    } else {
-        console.error('アップロード失敗:', response.status, response.statusText);
+    try {
+        const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/octet-stream',
+                'Dropbox-API-Arg': JSON.stringify({
+                    path: `/${filename}`, // アップロード先のパス
+                    mode: 'add', // 上書き追加
+                    autorename: true, // 同名のファイルがあれば自動的に名前を変更
+                    mute: false // 通知をしない
+                })
+            },
+            body: blob // Blobをボディとして送信
+        });
+
+        if (!response.ok) {
+            throw new Error('アップロードに失敗しました');
+        }
+
+        const result = await response.json();
+        console.log('録画がDropboxにアップロードされました:', result);
+    } catch (error) {
+        console.error('Dropboxアップロードエラー:', error);
     }
 }
