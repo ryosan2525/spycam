@@ -18,6 +18,7 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
         cameraSelect.appendChild(option);
     });
     
+    // デフォルトで最初のカメラ（外カメラ）を選択して表示
     startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
 });
 
@@ -50,13 +51,10 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        mediaRecorder.onstop = async () => {
+        mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-
-            // MP4形式に変換
-            const mp4Blob = await convertToMP4(recordedBlob);
-            downloadRecording(mp4Blob, 'recording.mp4'); // MP4形式の録画をダウンロード
+            downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
@@ -65,33 +63,16 @@ function startCamera(deviceId, facingMode = "environment") {
     });
 }
 
-// MP4形式に変換する関数
-async function convertToMP4(webmBlob) {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg({ log: true });
-
-    await ffmpeg.load();
-    ffmpeg.FS('writeFile', 'recording.webm', await fetchFile(webmBlob));
-    await ffmpeg.run('-i', 'recording.webm', 'output.mp4');
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-
-    return new Blob([data.buffer], { type: 'video/mp4' }); // MP4 Blobを返す
-}
-
 // 録画をダウンロードする関数
-function downloadRecording(blob, filename) {
+function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = filename; // ダウンロードするファイル名
+    a.download = 'recording.webm'; // ダウンロードするファイル名
     document.body.appendChild(a);
     a.click();
-    // 追加: 確実に要素を削除する
-    setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url); // URLを解放
-    }, 100); // 少し待ってから要素を削除
+    URL.revokeObjectURL(url);
 }
 
 // 録画開始
