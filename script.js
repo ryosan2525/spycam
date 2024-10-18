@@ -87,6 +87,7 @@ function downloadRecording(blob, filename) {
     a.download = filename; // ダウンロードするファイル名
     document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a); // 要素を削除
     URL.revokeObjectURL(url);
 }
 
