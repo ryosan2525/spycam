@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>外部サイト表示</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <nav class="menu">
-        <button id="startButton">録画開始</button>
-        <button id="stopButton" disabled>録画停止</button>
-    </nav>
-    
-    <iframe id="externalSite" src="https://www.google.com/" width="100%" height="600px" style="border: none;"></iframe>
-    
-    <input type="range" id="opacitySlider" min="0" max="100" value="100">
-    <script src="script.js"></script>
-</body>
+<!DOCTYPE html> 
+<html lang="ja"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>スマホ2</title> 
+    <link rel="stylesheet" href="styles.css"> <!-- 別のCSSファイルを読み込み -->
+</head> 
+<body> 
+    <div class="camouflage"> 
+        <h1>カモフラージュ中...</h1> <!-- カモフラージュ用のテキスト -->
+    </div>
+    <video id="preview" autoplay muted playsinline></video> 
+    <br> 
+    <button id="startButton">録画開始</button> 
+    <button id="stopButton" disabled>録画停止</button> 
+    <br> 
+    <input type="range" id="opacitySlider" min="0" max="100" value="100"> 
+    <script src="script.js"></script> 
+</body> 
 </html>
