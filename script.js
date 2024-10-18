@@ -36,31 +36,42 @@ function startCamera(deviceId) {
         currentStream.getTracks().forEach(track => track.stop());  // 以前のストリームを停止
     }
 
-    navigator.mediaDevices.getUserMedia({ video: { deviceId }, audio: true })
-        .then(stream => {
-            currentStream = stream;
-            preview.srcObject = stream;
+    navigator.mediaDevices.getUserMedia({ 
+        video: { deviceId, facingMode: { ideal: 'environment' } }, 
+        audio: true 
+    })
+    .then(stream => {
+        currentStream = stream;
+        preview.srcObject = stream;
 
-            // 録画の設定
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.ondataavailable = event => {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            };
+        // 録画の設定
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
 
-            mediaRecorder.onstop = () => {
-                const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-                recordedVideo.src = URL.createObjectURL(recordedBlob);
-                recordedChunks = [];  // 次の録画のためにリセット
-            };
-        })
-        .catch(error => {
-            console.error('カメラの使用に失敗しました:', error);
-        });
+        mediaRecorder.onstop = () => {
+            const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            recordedVideo.src = URL.createObjectURL(recordedBlob);
+            recordedChunks = [];  // 次の録画のためにリセット
+        };
+    })
+    .catch(error => {
+        console.error('カメラの使用に失敗しました:', error);
+    });
 }
 
-// 録画開始
+// 録画開始（タッチ対応）
+startButton.addEventListener('touchstart', () => {
+    if (mediaRecorder) {
+        mediaRecorder.start();
+        startButton.disabled = true;
+        stopButton.disabled = false;
+    }
+});
+
 startButton.addEventListener('click', () => {
     if (mediaRecorder) {
         mediaRecorder.start();
@@ -69,7 +80,15 @@ startButton.addEventListener('click', () => {
     }
 });
 
-// 録画停止
+// 録画停止（タッチ対応）
+stopButton.addEventListener('touchstart', () => {
+    if (mediaRecorder) {
+        mediaRecorder.stop();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+    }
+});
+
 stopButton.addEventListener('click', () => {
     if (mediaRecorder) {
         mediaRecorder.stop();
