@@ -1,47 +1,23 @@
 const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
-const cameraSelect = document.getElementById('cameraSelect');
-const opacitySlider = document.getElementById('opacitySlider');
 
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
 
-// スライダーの値を変更するたびに透過度を調整
-opacitySlider.addEventListener('input', () => {
-    const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
-    preview.style.opacity = opacityValue;  // 透過度を設定
-});
-
-navigator.mediaDevices.enumerateDevices().then(devices => {
-    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-    videoDevices.forEach((device, index) => {
-        const option = document.createElement('option');
-        option.value = device.deviceId;
-        option.text = device.label || `カメラ ${index + 1}`;
-        cameraSelect.appendChild(option);
-    });
-
-    // デフォルトで最初のカメラ（外カメラ）を選択して表示
-    startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
-});
-
-// 選択したカメラで映像を再取得する
-cameraSelect.addEventListener('change', () => {
-    const deviceId = cameraSelect.value;
-    startCamera(deviceId);
-});
+// 初めから外カメラ（環境カメラ）を選んで表示
+startCamera();
 
 // カメラを開始する関数
-function startCamera(deviceId, facingMode = "environment") {
+function startCamera(facingMode = "environment") {
     if (currentStream) {
         currentStream.getTracks().forEach(track => track.stop());  // 以前のストリームを停止
     }
 
-    navigator.mediaDevices.getUserMedia({ 
-        video: { deviceId, facingMode: { exact: facingMode } }, 
-        audio: true 
+    navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: facingMode } }, 
+        audio: true
     })
     .then(stream => {
         currentStream = stream;
@@ -61,7 +37,6 @@ function startCamera(deviceId, facingMode = "environment") {
             await downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
-        
     })
     .catch(error => {
         console.error('カメラの使用に失敗しました:', error);
