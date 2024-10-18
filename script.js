@@ -87,11 +87,8 @@ function downloadRecording(blob, filename) {
     a.download = filename; // ダウンロードするファイル名
     document.body.appendChild(a);
     a.click();
-    // 追加: 確実に要素を削除する
-    setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url); // URLを解放
-    }, 100); // 少し待ってから要素を削除
+    document.body.removeChild(a); // 要素を削除
+    URL.revokeObjectURL(url);
 }
 
 // 録画開始
