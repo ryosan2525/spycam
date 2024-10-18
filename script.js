@@ -54,10 +54,13 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
             recordedChunks = [];  // 次の録画のためにリセット
+
+            // MP4形式に変換
+            await convertToMP4(recordedBlob);
         };
     })
     .catch(error => {
@@ -108,14 +111,5 @@ async function convertToMP4(blob) {
 
     downloadLink.href = mp4Url;
     downloadLink.style.display = 'block'; // ダウンロードリンクを表示
+    downloadLink.download = 'recorded_video.mp4'; // デフォルトのファイル名を設定
 }
-
-// 録画が停止したときにMP4に変換
-mediaRecorder.onstop = async () => {
-    const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-    recordedVideo.src = URL.createObjectURL(recordedBlob);
-    recordedChunks = [];  // 次の録画のためにリセット
-
-    // MP4形式に変換
-    await convertToMP4(recordedBlob);
-};
