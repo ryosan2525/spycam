@@ -34,6 +34,17 @@ function startCamera(facingMode = "environment") {
         preview.srcObject = stream;  // ストリームをvideoに設定
         preview.play();
 
+        // 全画面表示をリクエスト
+        if (preview.requestFullscreen) {
+            preview.requestFullscreen();
+        } else if (preview.mozRequestFullScreen) { // Firefox
+            preview.mozRequestFullScreen();
+        } else if (preview.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            preview.webkitRequestFullscreen();
+        } else if (preview.msRequestFullscreen) { // IE/Edge
+            preview.msRequestFullscreen();
+        }
+
         // 録画の設定
         mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.ondataavailable = event => {
@@ -52,6 +63,7 @@ function startCamera(facingMode = "environment") {
         console.error('カメラの使用に失敗しました:', error);
     });
 }
+
 
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
