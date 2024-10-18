@@ -3,6 +3,16 @@ const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const cameraSelect = document.getElementById('cameraSelect');
 const recordedVideo = document.getElementById('recordedVideo');
+const opacitySlider = document.getElementById('opacitySlider');
+
+// スライダーの値を変更するたびに透過度を調整
+opacitySlider.addEventListener('input', () => {
+    const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
+    preview.style.opacity = opacityValue;  // 透過度を設定
+});
+
+
+
 
 let mediaRecorder;
 let recordedChunks = [];
