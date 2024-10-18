@@ -51,12 +51,13 @@ function startCamera(deviceId, facingMode = "environment") {
             }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            downloadRecording(recordedBlob); // 録画をダウンロード
+            await downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
+        
     })
     .catch(error => {
         console.error('カメラの使用に失敗しました:', error);
@@ -66,29 +67,40 @@ function startCamera(deviceId, facingMode = "environment") {
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
+    // リンクを作成してダウンロードを実行
     const a = document.createElement('a');
-    a.style.display = 'none';
     a.href = url;
-    a.download = 'recording.webm'; // ダウンロードするファイル名
+    a.download = 'recording.webm'; 
     document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+        document.body.removeChild(a); // リンクを削除
+        URL.revokeObjectURL(url); // URLを解放
+    }, 100); // 少し待ってから削除
 }
+
 
 // 録画開始
 startButton.addEventListener('click', () => {
-    if (mediaRecorder && mediaRecorder.state === "inactive") {
-        mediaRecorder.start();
-        startButton.disabled = true;
-        stopButton.disabled = false;
+    if (mediaRecorder) {
+        if (mediaRecorder.state === "inactive") {
+            mediaRecorder.start();
+            startButton.disabled = true;
+            stopButton.disabled = false;
+        } else {
+            console.warn('すでに録画中です。');
+        }
     }
 });
+
 
 // 録画停止
 stopButton.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
+        currentStream.getTracks().forEach(track => track.stop()); // ストリームも停止
         startButton.disabled = false;
         stopButton.disabled = true;
     }
 });
+
