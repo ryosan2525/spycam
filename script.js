@@ -1,43 +1,60 @@
-const { createFFmpeg, fetchFile } = FFmpeg;
 const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
+const cameraSelect = document.getElementById('cameraSelect');
 const recordedVideo = document.getElementById('recordedVideo');
-const downloadLink = document.getElementById('downloadLink');
 
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
-let ffmpeg;
 
-// カメラ映像を取得する関数
-function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+// カメラを列挙して選択肢を表示する
+navigator.mediaDevices.enumerateDevices().then(devices => {
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    videoDevices.forEach((device, index) => {
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+        option.text = device.label || `カメラ ${index + 1}`;
+        cameraSelect.appendChild(option);
+    });
+    
+    // デフォルトで最初のカメラ（外カメラ）を選択して表示
+    startCamera(videoDevices.length > 1 ? videoDevices[1].deviceId : videoDevices[0].deviceId, 'environment');
+});
+
+// 選択したカメラで映像を再取得する
+cameraSelect.addEventListener('change', () => {
+    const deviceId = cameraSelect.value;
+    startCamera(deviceId);
+});
+
+// カメラを開始する関数
+function startCamera(deviceId, facingMode = "environment") {
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());  // 以前のストリームを停止
+    }
+
+    navigator.mediaDevices.getUserMedia({ 
+        video: { deviceId, facingMode: { exact: facingMode } }, 
+        audio: true 
+    })
     .then(stream => {
-        preview.srcObject = stream;
         currentStream = stream;
+        preview.srcObject = stream;  // ストリームをvideoに設定
+        preview.play();
 
-        // MediaRecorderの設定
+        // 録画の設定
         mediaRecorder = new MediaRecorder(stream);
-        
-        // 録画データを収集
         mediaRecorder.ondataavailable = event => {
             if (event.data.size > 0) {
                 recordedChunks.push(event.data);
             }
         };
 
-        // 録画が停止したときに、動画ファイルを作成
-        mediaRecorder.onstop = async () => {
+        mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const webMUrl = URL.createObjectURL(recordedBlob);
-            
-            recordedVideo.src = webMUrl;
-            recordedVideo.controls = true;
-            recordedVideo.play();
-
-            // ffmpeg.jsを使用してwebMをMP4に変換
-            await convertToMP4(recordedBlob);
+            recordedVideo.src = URL.createObjectURL(recordedBlob);
+            recordedChunks = [];  // 次の録画のためにリセット
         };
     })
     .catch(error => {
@@ -45,52 +62,36 @@ function startCamera() {
     });
 }
 
-// 録画開始
-startButton.addEventListener('click', () => {
+// 録画開始（タッチ対応）
+startButton.addEventListener('touchstart', () => {
     if (mediaRecorder) {
-        recordedChunks = []; // 前回の録画データをリセット
         mediaRecorder.start();
-        console.log("録画開始");
-
         startButton.disabled = true;
         stopButton.disabled = false;
     }
 });
 
-// 録画停止
-stopButton.addEventListener('click', () => {
+startButton.addEventListener('click', () => {
+    if (mediaRecorder) {
+        mediaRecorder.start();
+        startButton.disabled = true;
+        stopButton.disabled = false;
+    }
+});
+
+// 録画停止（タッチ対応）
+stopButton.addEventListener('touchstart', () => {
     if (mediaRecorder) {
         mediaRecorder.stop();
-        console.log("録画停止");
-
         startButton.disabled = false;
         stopButton.disabled = true;
     }
 });
 
-// MP4形式に変換
-async function convertToMP4(blob) {
-    ffmpeg = createFFmpeg({ log: true });
-    await ffmpeg.load();
-    
-    // Blobをffmpeg.jsに渡す
-    ffmpeg.FS('writeFile', 'video.webm', await fetchFile(blob));
-    
-    // WebMをMP4に変換
-    await ffmpeg.run('-i', 'video.webm', 'output.mp4');
-    
-    // 変換後のファイルを取得
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    
-    // MP4ファイルをダウンロードリンクに設定
-    const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
-    const mp4Url = URL.createObjectURL(mp4Blob);
-
-    downloadLink.href = mp4Url;
-    downloadLink.style.display = 'block'; // ダウンロードリンクを表示
-}
-
-// ページロード時にカメラを開始
-window.onload = () => {
-    startCamera();
-};
+stopButton.addEventListener('click', () => {
+    if (mediaRecorder) {
+        mediaRecorder.stop();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+    }
+});

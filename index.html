@@ -3,20 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPhone対応動画録画</title>
+    <title>スマホ2</title>
+    <style>
+        /* スマホ用のレイアウト調整 */
+        @media only screen and (max-width: 600px) {
+            video {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            button {
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+            }
+
+            #cameraSelect {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>iPhone対応動画録画</h1>
+    <h1>カメラ切り替え動画撮影</h1>
+    <label for="cameraSelect">カメラ選択: </label>
+    <select id="cameraSelect"></select>
+    <br>
     <video id="preview" autoplay muted playsinline></video>
     <br>
     <button id="startButton">録画開始</button>
     <button id="stopButton" disabled>録画停止</button>
     <br>
     <video id="recordedVideo" controls></video>
-    <br>
-    <a id="downloadLink" href="#" download="video.mp4" style="display:none">録画をダウンロード</a>
 
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
