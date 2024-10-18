@@ -45,21 +45,15 @@ function startCamera(deviceId, facingMode = "environment") {
 
         // 録画の設定
         mediaRecorder = new MediaRecorder(stream);
-        recordedChunks = [];  // 録画データを初期化
-
-        // データが利用可能になったときに保存
         mediaRecorder.ondataavailable = event => {
             if (event.data.size > 0) {
                 recordedChunks.push(event.data);
             }
         };
 
-        // 録画が停止したらビデオを再生
         mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            recordedVideo.controls = true;  // コントロールを表示
-            recordedVideo.play();
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スマホ対応動画撮影</title>
+    <title>スマホ2</title>
     <style>
+        /* スマホ用のレイアウト調整 */
         @media only screen and (max-width: 600px) {
             video {
                 width: 100%;
@@ -26,7 +27,7 @@
     </style>
 </head>
 <body>
-    <h1>カメラ切り替え動画撮影1</h1>
+    <h1>カメラ切り替え動画撮影</h1>
     <label for="cameraSelect">カメラ選択: </label>
     <select id="cameraSelect"></select>
     <br>
@@ -36,8 +37,6 @@
     <button id="stopButton" disabled>録画停止</button>
     <br>
     <video id="recordedVideo" controls></video>
-    <br>
-    <a id="downloadLink" href="#" download="video.webm" style="display:none">録画をダウンロード</a>
 
     <script src="script.js"></script>
 </body>
