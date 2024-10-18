@@ -57,4 +57,5 @@ body {
     height: 100%;
     z-index: 1; /* 背景として表示 */
     opacity: 1;
+    position: sticky;
 }
