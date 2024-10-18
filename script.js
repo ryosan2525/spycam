@@ -8,44 +8,34 @@ let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
 
-// カメラを開始する関数
-function startCamera(deviceId, facingMode = "environment") {
-    if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());  // 以前のストリームを停止
-    }
-
-    navigator.mediaDevices.getUserMedia({ 
-        video: { deviceId, facingMode: { exact: facingMode } }, 
-        audio: true 
-    })
+// カメラ映像を取得する関数
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
+        preview.srcObject = stream;
         currentStream = stream;
-        preview.srcObject = stream;  // ストリームをvideoに設定
-        preview.play();
 
-        // 録画の設定
+        // MediaRecorderの設定
         mediaRecorder = new MediaRecorder(stream);
-        recordedChunks = [];  // 録画データを初期化
-
-        // データが利用可能になったときに保存
+        
+        // 録画データを収集
         mediaRecorder.ondataavailable = event => {
             if (event.data.size > 0) {
                 recordedChunks.push(event.data);
             }
         };
 
-        // 録画が停止したらビデオを再生し、ダウンロードリンクを作成
+        // 録画が停止したときに、動画ファイルを作成
         mediaRecorder.onstop = () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            recordedVideo.controls = true;  // コントロールを表示
+            recordedVideo.controls = true;
             recordedVideo.play();
-            recordedChunks = [];  // 次の録画のためにリセット
 
             // ダウンロードリンクを生成
             const downloadUrl = URL.createObjectURL(recordedBlob);
             downloadLink.href = downloadUrl;
-            downloadLink.style.display = 'block';  // ダウンロードリンクを表示
+            downloadLink.style.display = 'block';
         };
     })
     .catch(error => {
@@ -56,8 +46,10 @@ function startCamera(deviceId, facingMode = "environment") {
 // 録画開始
 startButton.addEventListener('click', () => {
     if (mediaRecorder) {
+        recordedChunks = []; // 前回の録画データをリセット
         mediaRecorder.start();
         console.log("録画開始");
+
         startButton.disabled = true;
         stopButton.disabled = false;
     }
@@ -68,7 +60,13 @@ stopButton.addEventListener('click', () => {
     if (mediaRecorder) {
         mediaRecorder.stop();
         console.log("録画停止");
+
         startButton.disabled = false;
         stopButton.disabled = true;
     }
 });
+
+// ページ読み込み時にカメラを起動
+window.onload = () => {
+    startCamera();
+};
