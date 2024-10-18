@@ -70,7 +70,7 @@ function downloadRecording(blob) {
     const filename = generateFilename(); // ファイル名を生成
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename; 
+    a.download = filename; // ここでファイル名を設定
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
