@@ -2,10 +2,11 @@ const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const cameraSelect = document.getElementById('cameraSelect');
-
 const opacitySlider = document.getElementById('opacitySlider');
 
-
+let mediaRecorder;
+let recordedChunks = [];
+let currentStream;
 
 // スライダーの値を変更するたびに透過度を調整
 opacitySlider.addEventListener('input', () => {
@@ -13,14 +14,6 @@ opacitySlider.addEventListener('input', () => {
     preview.style.opacity = opacityValue;  // 透過度を設定
 });
 
-
-
-
-let mediaRecorder;
-let recordedChunks = [];
-let currentStream;
-
-// カメラを列挙して選択肢を表示する
 navigator.mediaDevices.enumerateDevices().then(devices => {
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     videoDevices.forEach((device, index) => {
@@ -106,8 +99,6 @@ function generateFilename() {
 // 録画開始
 startButton.addEventListener('click', () => {
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        const deviceId = cameraSelect.value; // 選択されたカメラのIDを取得
-        
         mediaRecorder.start(); // 録画を開始
         startButton.disabled = true;
         stopButton.disabled = false;
@@ -118,7 +109,6 @@ startButton.addEventListener('click', () => {
 stopButton.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
-        
         startButton.disabled = false;
         stopButton.disabled = true;
     }
