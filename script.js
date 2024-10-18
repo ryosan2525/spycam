@@ -2,11 +2,10 @@ const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const cameraSelect = document.getElementById('cameraSelect');
-const recordedVideo = document.getElementById('recordedVideo');
+
 const opacitySlider = document.getElementById('opacitySlider');
 
-// 動画を非表示にする
-recordedVideo.style.display = 'none';
+
 
 // スライダーの値を変更するたびに透過度を調整
 opacitySlider.addEventListener('input', () => {
@@ -66,7 +65,6 @@ function startCamera(deviceId, facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            recordedVideo.src = URL.createObjectURL(recordedBlob);
             await downloadRecording(recordedBlob); // 録画をダウンロード
             recordedChunks = [];  // 次の録画のためにリセット
         };
