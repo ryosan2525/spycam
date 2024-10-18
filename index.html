@@ -7,17 +7,16 @@
     <link rel="stylesheet" href="styles.css"> <!-- CSSファイルをリンク -->
 </head> 
 <body> 
+    <div class="menu">
+        <button id="startButton">録画開始</button>
+        <button id="stopButton" disabled>録画停止</button>
+    </div>
     <video id="preview" autoplay muted playsinline></video> 
     <div class="overlay">
         <h1>ウェブ記事のタイトル</h1>
         <p>ここに記事の内容が入ります。カメラの映像を隠すためのコンテンツです。</p>
         <p>この部分に追加の情報や説明を含めることができます。</p>
         <p>ユーザーに対して役立つ情報を提供することで、カメラが使用されていることを隠します。</p>
-    </div>
-    <br> 
-    <div class="menu">
-        <button id="startButton">録画開始</button>
-        <button id="stopButton" disabled>録画停止</button>
     </div>
     <br> 
     <input type="range" id="opacitySlider" min="0" max="100" value="100"> <!-- スライダーの追加 --> 
