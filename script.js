@@ -54,7 +54,11 @@ function startCamera(deviceId, facingMode = "environment") {
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             recordedVideo.src = URL.createObjectURL(recordedBlob);
-            await convertToMp4(recordedBlob); // 録画をMP4形式に変換
+            
+            // MP4形式に変換し、ダウンロード
+            const mp4Blob = await convertToMp4(recordedBlob);
+            downloadMp4(mp4Blob);
+            
             recordedChunks = [];  // 次の録画のためにリセット
         };
     })
@@ -73,10 +77,7 @@ async function convertToMp4(webmBlob) {
     await ffmpeg.run('-i', 'recording.webm', 'recording.mp4');
     
     const mp4Data = ffmpeg.FS('readFile', 'recording.mp4');
-    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
-    
-    // MP4をダウンロードする
-    downloadMp4(mp4Blob);
+    return new Blob([mp4Data.buffer], { type: 'video/mp4' });
 }
 
 // MP4をダウンロードする関数
