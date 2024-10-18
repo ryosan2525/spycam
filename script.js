@@ -1,10 +1,18 @@
 const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
+const opacitySlider = document.getElementById('opacitySlider');
 
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
+
+// スライダーの値を変更するたびに透過度を調整
+opacitySlider.addEventListener('input', () => {
+    const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
+    preview.style.opacity = opacityValue;  // 透過度を設定
+});
+
 
 // 初めから外カメラ（環境カメラ）を選んで表示
 startCamera();
