@@ -67,15 +67,29 @@ function startCamera(deviceId, facingMode = "environment") {
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
+    const filename = generateFilename(); // ファイル名を生成
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'recording.webm'; 
+    a.download = filename; 
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
         document.body.removeChild(a); // リンクを削除
         URL.revokeObjectURL(url); // URLを解放
     }, 100); // 少し待ってから削除
+}
+
+// ファイル名を生成する関数
+function generateFilename() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
 
 // 録画開始
