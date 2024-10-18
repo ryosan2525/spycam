@@ -1,23 +1,38 @@
 body {
-    position: relative;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
-#preview {
-    position: absolute;  /* 背景に配置 */
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* 高さを画面全体に設定 */
+}
+
+.overlay {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;  /* カモフラージュ要素の背面 */
+    background-color: rgba(255, 255, 255, 0.8); /* 半透明の背景色 */
+    z-index: 1; /* カメラ映像の上に表示 */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* 縦スクロールを有効に */
 }
 
-.camouflage {
-    position: absolute;  /* カモフラージュ用の要素を前面に配置 */
-    top: 50%;  /* 中央に配置 */
-    left: 50%;
-    transform: translate(-50%, -50%);  /* 中央揃え */
-    z-index: 2;  /* 前面に表示 */
-    color: white;  /* テキストの色 */
-    font-size: 24px;  /* フォントサイズ */
-    text-align: center;  /* テキストの中央揃え */
+#preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* 背景として表示 */
+    opacity: 0.5; /* デフォルトで少し透明にする */
+}
+
+.menu-bar {
+    margin: 10px 0;
+    text-align: center;
 }
