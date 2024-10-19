@@ -3,7 +3,7 @@ const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const opacitySlider = document.getElementById('opacitySlider');
 const toggleCameraButton = document.getElementById('toggleCameraButton');
-const toggleMenuButton = document.getElementById('toggleMenuButton');  // メニュー表示/非表示ボタン
+const toggleMenuButton = document.getElementById('toggleMenuButton');
 const menu = document.getElementById('menu');
 
 let mediaRecorder;
@@ -17,12 +17,10 @@ startCamera();
 
 // メニューの表示/非表示を切り替える関数
 toggleMenuButton.addEventListener('click', () => {
-    if (menu.style.display === 'none') {
-        menu.style.display = 'block';  // メニューを表示
-        toggleMenuButton.textContent = 'メニュー非表示';  // ボタンのテキストを変更
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'flex';  // メニューを表示
     } else {
         menu.style.display = 'none';  // メニューを非表示
-        toggleMenuButton.textContent = 'メニュー表示';  // ボタンのテキストを変更
     }
 });
 
@@ -80,13 +78,16 @@ function toggleCamera() {
         }
         preview.srcObject = null;  // プレビューをクリア
         cameraIsOn = false;
-        toggleCameraButton.textContent = 'On';  // ボタンの表示を変更
+        toggleCameraButton.textContent = '⚫';  // ボタンの表示を変更
     } else {
         startCamera();
         cameraIsOn = true;
-        toggleCameraButton.textContent = 'Off';  // ボタンの表示を変更
+        toggleCameraButton.textContent = '🔵';  // ボタンの表示を変更
     }
 }
+
+
+
 
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
@@ -137,17 +138,5 @@ stopButton.addEventListener('click', () => {
 // カメラオンオフボタンのイベントリスナーを追加
 toggleCameraButton.addEventListener('click', toggleCamera);
 
-
-document.getElementById("toggleMenuButton").addEventListener("click", function() {
-    const menu = document.getElementById("menu");
-    if (menu.style.display === "none" || menu.style.display === "") {
-        menu.style.display = "flex"; // メニューを表示
-        this.textContent = "メニュー非表示"; // ボタンのテキストを変更
-    } else {
-        menu.style.display = "none"; // メニューを非表示
-        this.textContent = "メニュー表示"; // ボタンのテキストを変更
-    }
-});
-
 // 初期状態ではメニューを非表示にする場合は、次の行をコメントアウトしてください。
-// document.getElementById("menu").style.display = "none"; // メニューを非表示にする
+menu.style.display = 'flex';  // 初期表示時にメニューを表示する場合

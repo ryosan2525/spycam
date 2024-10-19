@@ -5,21 +5,43 @@ body {
 }
 
 .menu {
-    position: fixed; /* メニューを画面の上に固定 */
-    top: 0; /* 上からの距離を0に設定 */
+    position: fixed; /* メニューを画面の下に固定 */
+    bottom: 0; /* 下からの距離を0に設定 */
     left: 0;
     width: 100%; /* 幅を100%に設定 */
     background-color: rgba(255, 255, 255, 0.7); /* 白ベースの半透明の背景色 */
     padding: 5px; /* パディングを少し減らす */
-    text-align: center; /* 中央揃え */
-    z-index: 3; /* オーバーレイより上に表示 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 軽い影を追加して浮かせる */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* 薄い下枠線を追加 */
     display: flex; /* フレックスボックスで配置 */
-    justify-content: center; /* 中央揃え */
+    justify-content: flex-start; /* 左寄せ */
     align-items: center; /* 縦方向にも中央揃え */
+    z-index: 2; /* メニューを少し上に */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* 上からの影を追加して浮かせる */
+    border-top: 1px solid rgba(0, 0, 0, 0.1); /* 薄い上枠線を追加 */
     opacity: 0.8; /* 少し透明にして目立たなくする */
 }
+
+
+
+/* メニュー非表示ボタンの位置を左下に */
+#toggleMenuButton {
+    position: absolute; /* 絶対位置 */
+    right: 10px; /* 左からの距離 */
+    bottom: 10px; /* メニューからの距離 */
+    z-index: 4; /* 最上位に表示 */
+
+
+    background-color: #ffffff; /* ボタンの背景色を白に */
+    color: #333; /* ボタンの文字色を濃いグレーに */
+    border: 1px solid #ccc; /* ボーダーを薄いグレーに */
+    cursor: pointer; /* カーソルをポインターに */
+    border-radius: 5px; /* ボタンの角を丸く */
+    font-size: 14px; /* ボタンのフォントサイズを少し小さく */
+    opacity: 0.9; /* ボタンも少し透明に */
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+}
+
+
+
 
 .menu button {
     background-color: #ffffff; /* ボタンの背景色を白に */
@@ -45,7 +67,6 @@ body {
     position: relative;
     width: 100%;
     height: 100vh; /* 高さを画面全体に設定 */
-    margin-top: 40px; /* メニューの高さを考慮してマージンを追加 */
 }
 
 .overlay {
@@ -69,4 +90,11 @@ body {
     height: 100%;
     z-index: 1; /* 背景として表示 */
     opacity: 1;
+}
+
+
+/* スライダーのスタイルを調整 */
+#opacitySlider {
+    width: 80px; /* スライダーの横幅を短く */
+    margin: 0 5px; /* ボタンとスライダーの間に少しマージンを追加 */
 }

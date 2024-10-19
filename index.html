@@ -1,25 +1,15 @@
-<!DOCTYPE html> 
-<html lang="ja"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>スマホ2</title> 
-    <link rel="stylesheet" href="styles.css"> 
-</head> 
-<body> 
-    <div class="menu" id="menu">
-        <button id="toggleMenuButton">メニュー非表示</button>  <!-- メニュー表示/非表示ボタンを追加 -->
-        <button id="toggleCameraButton">OFF</button>
-        <button id="startButton">録画開始</button>
-        <button id="stopButton" disabled>録画停止</button>
-        <input type="range" id="opacitySlider" min="0" max="100" value="0"> 
-    </div>
-    
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スマホ2</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
     <div class="container">
-        <video id="preview" autoplay muted playsinline></video> 
+        <video id="preview" autoplay muted playsinline></video>
         <div class="overlay">
-            <br>
-            <br>
             <h1>原子の質量を¹²Cの質量の1/12に対する比で表したモノを“相対質量”といいます。</h1>
             <p>¹²Cの相対質量はピッタリ12。これが基準だから。他の原子の相対質量がピッタリ質量数にならない理由は陽子と中性子の質量が異なることと質量欠損があることです。</p>
             <p>問）¹²C原子核1個の質量の1/12を1uとする。次のうち正しい等式はどれか</p>
@@ -32,6 +22,15 @@
         </div>
     </div>
     
-    <script src="script.js"></script> 
-</body> 
+    <div class="menu" id="menu">
+        <button id="toggleCameraButton">🔵</button> <!-- ON/OFFボタンを記号に変更 -->
+        <button id="startButton">▶️</button> <!-- 録画開始を記号に変更 -->
+        <button id="stopButton" disabled>⏹️</button> <!-- 録画停止を記号に変更 -->
+        <input type="range" id="opacitySlider" min="0" max="100" value="0">
+    </div>
+    <button id="toggleMenuButton" class="menu-toggle">☰</button>  <!-- メニュー表示/非表示ボタンを外に移動 -->
+    
+    
+    <script src="script.js"></script>
+</body>
 </html>
