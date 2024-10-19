@@ -68,7 +68,7 @@ video {
     right: 0;
     bottom: 0;
     padding: 20px;
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255);
     z-index: 1;
     overflow-y: auto;
 }
