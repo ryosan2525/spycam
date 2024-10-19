@@ -55,18 +55,7 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-
-            const binaryData = new Uint8Array(await recordedBlob.arrayBuffer());
-
-            const webmName = "video" + ".webm";
-            const mp4Name = generateFilename() + ".mp4";
-            
-
-            const video = await generateMp4Video(binaryData, webmName, mp4Name);
-            const mp4Blob = new Blob([video], { type: "video/mp4" });
-
-
-            await downloadRecording(binaryData);
+            await downloadRecording(recordedBlob);
             recordedChunks = [];
         };
     })
@@ -144,30 +133,9 @@ function generateFilename() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
 
-async function generateMp4Video(binaryData, webmName, mp4Name) {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg({ log: true });
-
-    await ffmpeg.load();
-    
-    // WebMデータをFFmpegに書き込む
-    ffmpeg.FS('writeFile', webmName, new Uint8Array(binaryData));
-    
-    // WebMファイルをMP4に変換
-    await ffmpeg.run('-i', webmName, mp4Name);
-    
-    // MP4ファイルを取得
-    const mp4Data = ffmpeg.FS('readFile', mp4Name);
-    
-    // メモリからファイルを削除
-    ffmpeg.FS('unlink', webmName);
-    ffmpeg.FS('unlink', mp4Name);
-    
-    return mp4Data.buffer; // 変換されたMP4データを返す
-}
 
 
 
