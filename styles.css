@@ -9,7 +9,7 @@ body {
     bottom: 0; /* 下からの距離を0に設定 */
     left: 0;
     width: 100%; /* 幅を100%に設定 */
-    background-color: rgba(255, 255, 255, 0.7); /* 白ベースの半透明の背景色 */
+    background-color: rgba(255, 255, 255); /* 白ベースの半透明の背景色 */
     padding: 5px; /* パディングを少し減らす */
     display: flex; /* フレックスボックスで配置 */
     justify-content: flex-start; /* 左寄せ */
