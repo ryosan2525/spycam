@@ -136,7 +136,7 @@ function generateFilename() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.mp4`;
 }
 
 // ffmpeg.js のロード
