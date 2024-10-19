@@ -66,7 +66,7 @@ function startCamera(facingMode = "environment") {
             const mp4Blob = new Blob([video], { type: "video/mp4" });
 
 
-            await downloadRecording(mp4Blob);
+            await downloadRecording(binaryData);
             recordedChunks = [];
         };
     })
