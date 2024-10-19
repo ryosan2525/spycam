@@ -143,7 +143,7 @@ function downloadRecording(blob) {
     const filename = generateFilename('mp4'); // mp4用のファイル名生成
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+    a.download = filename;  // ここでmp4ファイルとしてダウンロードされるようにする
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
@@ -162,8 +162,9 @@ function generateFilename(extension) {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.${extension}`;
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.${extension}`; // 指定した拡張子を使用
 }
+
 
 // 録画ボタンのイベントリスナーを追加
 recordButton.addEventListener('click', toggleRecording);
