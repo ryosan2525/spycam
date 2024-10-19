@@ -88,6 +88,11 @@ function toggleCamera() {
 
 // 録画を開始/停止する関数
 function toggleRecording() {
+    if (!cameraIsOn) {
+        alert("カメラがオフになっています。カメラをオンにしてから録画を開始してください。");
+        return;  // カメラがオフの場合、録画は開始しない
+    }
+
     if (!isRecording) {
         if (!mediaRecorder || mediaRecorder.state === "inactive") {
             mediaRecorder.start();
