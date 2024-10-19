@@ -5,10 +5,6 @@ const toggleCameraButton = document.getElementById('toggleCameraButton');
 const toggleMenuButton = document.getElementById('toggleMenuButton');
 const menu = document.getElementById('menu');
 
-// ffmpeg.js のロード
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
-
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
@@ -59,12 +55,9 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            await downloadRecording(recordedBlob);
             recordedChunks = [];
-        
-            // WebMをMP4に変換
-            await convertWebMToMP4(recordedBlob);
         };
-        
     })
     .catch(error => {
         console.error('カメラの使用に失敗しました:', error);
@@ -115,49 +108,20 @@ function toggleRecording() {
     }
 }
 
-// MP4に変換する関数
-async function convertWebMToMP4(blob) {
-    try {
-        if (!ffmpeg.isLoaded()) {
-            alert("ffmpeg読み込み中");
-            await ffmpeg.load();
-            alert("ffmpeg読み込み完了");
-        }
-
-        // Blobをffmpeg.jsに渡す
-        const webmData = await fetchFile(blob);
-        ffmpeg.FS('writeFile', 'video.webm', webmData);
-
-        // WebMファイルをMP4に変換
-        await ffmpeg.run('-i', 'video.webm', 'output.mp4');
-
-
-        // MP4ファイルを取得
-        const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
-        const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
-
-        // MP4ファイルをダウンロード
-        downloadRecording(mp4Blob);
-    } catch (error) {
-        alert(error);  // エラー情報をコンソールに出力
-    }
-}
-
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
     const filename = generateFilename();
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;  // ここで適切なファイル名が設定されているか
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);  // URLのメモリ解放
+        URL.revokeObjectURL(url);
     }, 100);
 }
-
 
 // ファイル名を生成する関数
 function generateFilename() {
@@ -169,9 +133,8 @@ function generateFilename() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.mp4`;
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
-
 
 
 
