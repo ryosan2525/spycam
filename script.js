@@ -147,6 +147,27 @@ function generateFilename() {
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 }
 
+async function generateMp4Video(binaryData, webmName, mp4Name) {
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+
+    await ffmpeg.load();
+    
+    // WebMデータをFFmpegに書き込む
+    ffmpeg.FS('writeFile', webmName, new Uint8Array(binaryData));
+    
+    // WebMファイルをMP4に変換
+    await ffmpeg.run('-i', webmName, mp4Name);
+    
+    // MP4ファイルを取得
+    const mp4Data = ffmpeg.FS('readFile', mp4Name);
+    
+    // メモリからファイルを削除
+    ffmpeg.FS('unlink', webmName);
+    ffmpeg.FS('unlink', mp4Name);
+    
+    return mp4Data.buffer; // 変換されたMP4データを返す
+}
 
 
 
