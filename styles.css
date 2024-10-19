@@ -20,56 +20,49 @@ body {
     opacity: 0.8; /* 少し透明にして目立たなくする */
 }
 
-
-
 /* メニュー非表示ボタンの位置を左下に */
 #toggleMenuButton {
     position: fixed; /* 絶対位置を固定に変更 */
     right: 10px; /* 右からの距離 */
     bottom: 10px; /* 下からの距離 */
     z-index: 4; /* 最上位に表示 */
-
     background-color: #ffffff; /* ボタンの背景色を白に */
     color: #333; /* ボタンの文字色を濃いグレーに */
     border: 1px solid #ccc; /* ボーダーを薄いグレーに */
     cursor: pointer; /* カーソルをポインターに */
     border-radius: 5px; /* ボタンの角を丸く */
-    font-size: 14px; /* ボタンのフォントサイズを少し小さく */
+    font-size: 18px; /* ボタンのフォントサイズを指定 */
+    line-height: 1; /* 行の高さを1に設定 */
     opacity: 0.9; /* ボタンも少し透明に */
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
 }
 
-
-
-
-
-
+/* メニューボタンのスタイル */
 .menu button {
-    background-color: #ffffff; /* ボタンの背景色を白に */
-    color: #333; /* ボタンの文字色を濃いグレーに */
-    border: 1px solid #ccc; /* ボーダーを薄いグレーに */
-    padding: 8px 15px; /* ボタンのパディングを少し小さく */
-    margin: 3px; /* ボタン間のマージンを小さく */
+    background: none; /* 背景をなしに設定 */
+    border: none; /* ボーダーをなしに設定 */
+    padding: 0; /* パディングをなしに設定 */
     cursor: pointer; /* カーソルをポインターに */
-    border-radius: 5px; /* ボタンの角を丸く */
-    font-size: 14px; /* ボタンのフォントサイズを少し小さく */
-    opacity: 0.9; /* ボタンも少し透明に */
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    font-size: 18px; /* フォントサイズを指定 */
+    line-height: 1; /* 行の高さを1に設定 */
+    color: #333; /* アイコンの色を指定 */
+    margin: 3px; /* ボタン間のマージンを小さく */
 }
 
+/* 無効ボタンのスタイル */
 .menu button:disabled {
-    background-color: #eee; /* 無効ボタンの背景色を薄いグレーに */
     color: #999; /* 無効ボタンの文字色を薄いグレーに */
-    cursor: not-allowed; /* カーソルを無効に */
-    opacity: 0.7; /* 無効ボタンはさらに透明に */
+    opacity: 0.5; /* 無効ボタンはさらに透明に */
 }
 
+/* コンテナのスタイル */
 .container {
     position: relative;
     width: 100%;
     height: 100vh; /* 高さを画面全体に設定 */
 }
 
+/* オーバーレイのスタイル */
 .overlay {
     position: absolute;
     top: 0;
@@ -83,6 +76,7 @@ body {
     overflow-y: auto; /* 縦スクロールを有効に */
 }
 
+/* プレビューのスタイル */
 #preview {
     position: fixed;
     bottom: 0;
@@ -92,7 +86,6 @@ body {
     z-index: 1; /* 背景として表示 */
     opacity: 1;
 }
-
 
 /* スライダーのスタイルを調整 */
 #opacitySlider {
