@@ -55,9 +55,12 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            await downloadRecording(recordedBlob);
             recordedChunks = [];
+        
+            // WebMをMP4に変換
+            await convertWebMToMP4(recordedBlob);
         };
+        
     })
     .catch(error => {
         console.error('カメラの使用に失敗しました:', error);
@@ -135,6 +138,35 @@ function generateFilename() {
 
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
+
+// ffmpeg.js のロード
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
+
+// MP4に変換する関数
+async function convertWebMToMP4(blob) {
+    if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+    }
+    
+    // Blobをffmpeg.jsに渡す
+    const webmData = await fetchFile(blob);
+    
+    // ffmpeg.jsにファイルをロード
+    ffmpeg.FS('writeFile', 'input.webm', webmData);
+
+    // WebMファイルをMP4に変換
+    await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+
+    // MP4ファイルを取得
+    const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
+    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+
+    // MP4ファイルをダウンロード
+    downloadRecording(mp4Blob, 'mp4');
+}
+
+
 
 // 録画ボタンのイベントリスナーを追加
 recordButton.addEventListener('click', toggleRecording);
