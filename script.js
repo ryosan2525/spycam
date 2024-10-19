@@ -5,6 +5,10 @@ const toggleCameraButton = document.getElementById('toggleCameraButton');
 const toggleMenuButton = document.getElementById('toggleMenuButton');
 const menu = document.getElementById('menu');
 
+// ffmpeg.js のロード
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
+
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
@@ -111,6 +115,29 @@ function toggleRecording() {
     }
 }
 
+// MP4に変換する関数
+async function convertWebMToMP4(blob) {
+    if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+    }
+    
+    // Blobをffmpeg.jsに渡す
+    const webmData = await fetchFile(blob);
+    
+    // ffmpeg.jsにファイルをロード
+    ffmpeg.FS('writeFile', 'input.webm', webmData);
+
+    // WebMファイルをMP4に変換
+    await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+
+    // MP4ファイルを取得
+    const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
+    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+
+    // MP4ファイルをダウンロード
+    downloadRecording(mp4Blob, 'mp4');
+}
+
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
@@ -139,32 +166,7 @@ function generateFilename() {
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.mp4`;
 }
 
-// ffmpeg.js のロード
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
 
-// MP4に変換する関数
-async function convertWebMToMP4(blob) {
-    if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
-    }
-    
-    // Blobをffmpeg.jsに渡す
-    const webmData = await fetchFile(blob);
-    
-    // ffmpeg.jsにファイルをロード
-    ffmpeg.FS('writeFile', 'input.webm', webmData);
-
-    // WebMファイルをMP4に変換
-    await ffmpeg.run('-i', 'input.webm', 'output.mp4');
-
-    // MP4ファイルを取得
-    const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
-    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
-
-    // MP4ファイルをダウンロード
-    downloadRecording(mp4Blob, 'mp4');
-}
 
 
 
