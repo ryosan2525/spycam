@@ -1,6 +1,5 @@
 const preview = document.getElementById('preview');
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
+const recordButton = document.getElementById('recordButton');
 const opacitySlider = document.getElementById('opacitySlider');
 const toggleCameraButton = document.getElementById('toggleCameraButton');
 const toggleMenuButton = document.getElementById('toggleMenuButton');
@@ -9,7 +8,8 @@ const menu = document.getElementById('menu');
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
-let cameraIsOn = true;  // カメラがオンかどうかの状態管理
+let cameraIsOn = true;
+let isRecording = false;  // 録画中かどうかの状態を管理
 
 // 初めはpreviewを透明に設定
 preview.style.opacity = 0;
@@ -26,14 +26,14 @@ toggleMenuButton.addEventListener('click', () => {
 
 // スライダーの値を変更するたびに透過度を調整
 opacitySlider.addEventListener('input', () => {
-    const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
-    preview.style.opacity = opacityValue;  // 透過度を設定
+    const opacityValue = opacitySlider.value / 100;
+    preview.style.opacity = opacityValue;
 });
 
 // カメラを開始する関数
 function startCamera(facingMode = "environment") {
     if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());  // 以前のストリームを停止
+        currentStream.getTracks().forEach(track => track.stop());
     }
 
     navigator.mediaDevices.getUserMedia({
@@ -42,7 +42,7 @@ function startCamera(facingMode = "environment") {
     })
     .then(stream => {
         currentStream = stream;
-        preview.srcObject = stream;  // ストリームをvideoに設定
+        preview.srcObject = stream;
         preview.play();
 
         // 録画の設定
@@ -55,8 +55,8 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            await downloadRecording(recordedBlob); // 録画をダウンロード
-            recordedChunks = [];  // 次の録画のためにリセット
+            await downloadRecording(recordedBlob);
+            recordedChunks = [];
         };
     })
     .catch(error => {
@@ -68,40 +68,54 @@ function startCamera(facingMode = "environment") {
 function toggleCamera() {
     if (cameraIsOn) {
         if (mediaRecorder && mediaRecorder.state === "recording") {
-            mediaRecorder.stop();  // 録画を停止
-            startButton.disabled = false;
-            stopButton.disabled = true;
+            mediaRecorder.stop();
+            isRecording = false;
+            recordButton.textContent = '▶️';
         }
 
         if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());  // ストリームを停止
+            currentStream.getTracks().forEach(track => track.stop());
         }
-        preview.srcObject = null;  // プレビューをクリア
+        preview.srcObject = null;
         cameraIsOn = false;
-        toggleCameraButton.textContent = '⚫';  // ボタンの表示を変更
+        toggleCameraButton.textContent = '⚫';
     } else {
         startCamera();
         cameraIsOn = true;
-        toggleCameraButton.textContent = '🔵';  // ボタンの表示を変更
+        toggleCameraButton.textContent = '🔵';
     }
 }
 
-
-
+// 録画を開始/停止する関数
+function toggleRecording() {
+    if (!isRecording) {
+        if (!mediaRecorder || mediaRecorder.state === "inactive") {
+            mediaRecorder.start();
+            recordButton.textContent = '⏹️';  // 停止ボタンに切り替える
+            isRecording = true;
+        }
+    } else {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            recordButton.textContent = '▶️';  // 開始ボタンに切り替える
+            isRecording = false;
+        }
+    }
+}
 
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
-    const filename = generateFilename();  // ファイル名を生成
+    const filename = generateFilename();
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;  // ここでファイル名を設定
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
-        document.body.removeChild(a);  // リンクを削除
-        URL.revokeObjectURL(url);  // URLを解放
-    }, 100);  // 少し待ってから削除
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
 }
 
 // ファイル名を生成する関数
@@ -117,26 +131,11 @@ function generateFilename() {
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
 
-// 録画開始
-startButton.addEventListener('click', () => {
-    if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        mediaRecorder.start();  // 録画を開始
-        startButton.disabled = true;
-        stopButton.disabled = false;
-    }
-});
-
-// 録画停止
-stopButton.addEventListener('click', () => {
-    if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        startButton.disabled = false;
-        stopButton.disabled = true;
-    }
-});
+// 録画ボタンのイベントリスナーを追加
+recordButton.addEventListener('click', toggleRecording);
 
 // カメラオンオフボタンのイベントリスナーを追加
 toggleCameraButton.addEventListener('click', toggleCamera);
 
 // 初期状態ではメニューを非表示にする場合は、次の行をコメントアウトしてください。
-menu.style.display = 'flex';  // 初期表示時にメニューを表示する場合
+menu.style.display = 'flex';

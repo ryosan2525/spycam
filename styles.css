@@ -1,92 +1,77 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* 明るい背景色 */
+    background-color: #f0f0f0;
 }
 
 .menu {
-    position: fixed; /* メニューを画面の下に固定 */
-    bottom: 0; /* 下からの距離を0に設定 */
-    left: 0;
-    width: 100%; /* 幅を100%に設定 */
-    background-color: rgba(255, 255, 255); /* 白ベースの半透明の背景色 */
-    padding: 5px; /* パディングを少し減らす */
-    display: flex; /* フレックスボックスで配置 */
-    justify-content: flex-start; /* 左寄せ */
-    align-items: center; /* 縦方向にも中央揃え */
-    z-index: 2; /* メニューを少し上に */
-    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* 上からの影を追加して浮かせる */
-    border-top: 1px solid rgba(0, 0, 0, 0.1); /* 薄い上枠線を追加 */
-}
-
-/* メニュー非表示ボタンのスタイル */
-#toggleMenuButton {
-    font-family: 'Arial', sans-serif; /* ここに使用したいアイコンフォントを指定 */
-    position: fixed; /* 絶対位置を固定に変更 */
-    right: 10px; /* 右からの距離 */
-    bottom: 10px; /* 下からの距離 */
-    z-index: 4; /* 最上位に表示 */
-    background: none; /* 背景をなしに設定 */
-    color: #333; /* ボタンの文字色を濃いグレーに */
-    border: none; /* ボーダーをなしに設定 */
-    cursor: pointer; /* カーソルをポインターに */
-    font-size: 24px; /* ボタンのフォントサイズを指定 */
-    line-height: 1; /* 行の高さを1に設定 */
-}
-
-
-/* メニューボタンのスタイル */
-.menu button {
-    font-family: 'Arial', sans-serif; /* ここに使用したいアイコンフォントを指定 */
-    background: none; /* 背景をなしに設定 */
-    border: none; /* ボーダーをなしに設定 */
-    padding: 0; /* パディングをなしに設定 */
-    cursor: pointer; /* カーソルをポインターに */
-    font-size: 24px; /* フォントサイズを指定 */
-    line-height: 1; /* 行の高さを1に設定 */
-    color: #333; /* アイコンの色を指定 */
-    margin: 3px; /* ボタン間のマージンを小さく */
-}
-
-/* 無効ボタンのスタイル */
-.menu button:disabled {
-    color: #999; /* 無効ボタンの文字色を薄いグレーに */
-}
-
-/* コンテナのスタイル */
-.container {
-    position: relative;
-    width: 100%;
-    height: 100vh; /* 高さを画面全体に設定 */
-}
-
-/* オーバーレイのスタイル */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9); /* 半透明の白色背景 */
-    z-index: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto; /* 縦スクロールを有効に */
-}
-
-/* プレビューのスタイル */
-#preview {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 1; /* 背景として表示 */
-    opacity: 1;
+    background-color: rgba(255, 255, 255);
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 2;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* スライダーのスタイルを調整 */
+#toggleMenuButton {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    z-index: 4;
+    background: none;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 24px;
+}
+
 #opacitySlider {
-    width: 80px; /* スライダーの横幅を短く */
-    margin: 0 5px; /* ボタンとスライダーの間に少しマージンを追加 */
+    width: 100px;
+    margin-left: 10px;
+}
+
+#toggleCameraButton,
+#recordButton {
+    margin: 0 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+    overflow-y: auto;
+}
+
+h1, p {
+    margin: 0;
+    padding: 5px 0;
 }
