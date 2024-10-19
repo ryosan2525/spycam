@@ -119,7 +119,9 @@ function toggleRecording() {
 async function convertWebMToMP4(blob) {
     try {
         if (!ffmpeg.isLoaded()) {
+            alert("ffmpeg読み込み中");
             await ffmpeg.load();
+            alert("ffmpeg読み込み完了");
         }
 
         // Blobをffmpeg.jsに渡す
@@ -136,7 +138,7 @@ async function convertWebMToMP4(blob) {
         // MP4ファイルをダウンロード
         downloadRecording(mp4Blob);
     } catch (error) {
-        alert('MP4への変換に失敗しました:', error);  // エラー情報をコンソールに出力
+        alert(error);  // エラー情報をコンソールに出力
     }
 }
 
