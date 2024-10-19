@@ -24,11 +24,10 @@ body {
 
 /* メニュー非表示ボタンの位置を左下に */
 #toggleMenuButton {
-    position: absolute; /* 絶対位置 */
-    right: 10px; /* 左からの距離 */
-    bottom: 10px; /* メニューからの距離 */
+    position: fixed; /* 絶対位置を固定に変更 */
+    right: 10px; /* 右からの距離 */
+    bottom: 10px; /* 下からの距離 */
     z-index: 4; /* 最上位に表示 */
-
 
     background-color: #ffffff; /* ボタンの背景色を白に */
     color: #333; /* ボタンの文字色を濃いグレーに */
@@ -39,6 +38,8 @@ body {
     opacity: 0.9; /* ボタンも少し透明に */
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
 }
+
+
 
 
 
