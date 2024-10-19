@@ -7,7 +7,7 @@ const toggleCameraButton = document.getElementById('toggleCameraButton');  // �
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
-let cameraIsOn = false;  // カメラがオンかどうかの状態管理
+let cameraIsOn = true;  // カメラがオンかどうかの状態管理
 
 // 初めはpreviewを透明に設定
 preview.style.opacity = 0;
@@ -58,6 +58,8 @@ function toggleCamera() {
         // カメラがオンの場合、録画中なら録画を停止してからストリームを停止
         if (mediaRecorder && mediaRecorder.state === "recording") {
             mediaRecorder.stop(); // 録画を停止
+            startButton.disabled = false;
+            stopButton.disabled = true;
         }
 
         if (currentStream) {
