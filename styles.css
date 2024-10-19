@@ -20,27 +20,26 @@ body {
     opacity: 0.8; /* 少し透明にして目立たなくする */
 }
 
-/* メニュー非表示ボタンの位置を左下に */
+/* メニュー非表示ボタンのスタイル */
 #toggleMenuButton {
-    font-family: 'Your Icon Font', sans-serif; /* ここに使用したいアイコンフォントを指定 */
+    font-family: 'Arial', sans-serif; /* ここに使用したいアイコンフォントを指定 */
     position: fixed; /* 絶対位置を固定に変更 */
     right: 10px; /* 右からの距離 */
     bottom: 10px; /* 下からの距離 */
     z-index: 4; /* 最上位に表示 */
-    background-color: #ffffff; /* ボタンの背景色を白に */
+    background: none; /* 背景をなしに設定 */
     color: #333; /* ボタンの文字色を濃いグレーに */
-    border: 1px solid #ccc; /* ボーダーを薄いグレーに */
+    border: none; /* ボーダーをなしに設定 */
     cursor: pointer; /* カーソルをポインターに */
-    border-radius: 5px; /* ボタンの角を丸く */
     font-size: 24px; /* ボタンのフォントサイズを指定 */
     line-height: 1; /* 行の高さを1に設定 */
     opacity: 0.9; /* ボタンも少し透明に */
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
 }
+
 
 /* メニューボタンのスタイル */
 .menu button {
-    font-family: 'Your Icon Font', sans-serif; /* ここに使用したいアイコンフォントを指定 */
+    font-family: 'Arial', sans-serif; /* ここに使用したいアイコンフォントを指定 */
     background: none; /* 背景をなしに設定 */
     border: none; /* ボーダーをなしに設定 */
     padding: 0; /* パディングをなしに設定 */
