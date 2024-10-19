@@ -126,10 +126,11 @@ async function convertWebMToMP4(blob) {
 
         // Blobをffmpeg.jsに渡す
         const webmData = await fetchFile(blob);
-        ffmpeg.FS('writeFile', 'input.webm', webmData);
+        ffmpeg.FS('writeFile', 'video.webm', webmData);
 
         // WebMファイルをMP4に変換
-        await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+        await ffmpeg.run('-i', 'video.webm', 'output.mp4');
+
 
         // MP4ファイルを取得
         const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
