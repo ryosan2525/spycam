@@ -7,14 +7,13 @@
     <link rel="stylesheet" href="styles.css"> 
 </head> 
 <body> 
-    
     <div class="menu" id="menu">
+        <button id="toggleMenuButton">メニュー非表示</button>  <!-- メニュー表示/非表示ボタンを追加 -->
         <button id="toggleCameraButton">OFF</button>
         <button id="startButton">録画開始</button>
         <button id="stopButton" disabled>録画停止</button>
         <input type="range" id="opacitySlider" min="0" max="100" value="0"> 
     </div>
-    <button id="toggleMenuButton">メニュー表示</button>  <!-- メニュー表示/非表示ボタンを追加 -->
     
     <div class="container">
         <video id="preview" autoplay muted playsinline></video> 

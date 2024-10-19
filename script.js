@@ -136,3 +136,18 @@ stopButton.addEventListener('click', () => {
 
 // カメラオンオフボタンのイベントリスナーを追加
 toggleCameraButton.addEventListener('click', toggleCamera);
+
+
+document.getElementById("toggleMenuButton").addEventListener("click", function() {
+    const menu = document.getElementById("menu");
+    if (menu.style.display === "none" || menu.style.display === "") {
+        menu.style.display = "flex"; // メニューを表示
+        this.textContent = "メニュー非表示"; // ボタンのテキストを変更
+    } else {
+        menu.style.display = "none"; // メニューを非表示
+        this.textContent = "メニュー表示"; // ボタンのテキストを変更
+    }
+});
+
+// 初期状態ではメニューを非表示にする場合は、次の行をコメントアウトしてください。
+// document.getElementById("menu").style.display = "none"; // メニューを非表示にする
