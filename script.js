@@ -55,8 +55,8 @@ function startCamera(facingMode = "environment") {
 
         mediaRecorder.onstop = async () => {
             const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            await downloadRecording(recordedBlob);
             recordedChunks = [];
+            await convertAndDownload(recordedBlob); // 変換してダウンロード
         };
     })
     .catch(error => {
@@ -108,10 +108,39 @@ function toggleRecording() {
     }
 }
 
+// 録画を変換してダウンロードする関数
+async function convertAndDownload(blob) {
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+
+    try {
+        await ffmpeg.load();
+        
+        // BlobをFFmpegに書き込む
+        ffmpeg.FS('writeFile', 'input.webm', await fetchFile(blob));
+        
+        // WebMファイルをMP4に変換
+        await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+        
+        // MP4ファイルを取得
+        const data = ffmpeg.FS('readFile', 'output.mp4');
+        
+        // MP4ファイルをダウンロード
+        downloadRecording(new Blob([data.buffer], { type: 'video/mp4' }));
+        
+        // メモリからファイルを削除
+        ffmpeg.FS('unlink', 'input.webm');
+        ffmpeg.FS('unlink', 'output.mp4');
+        
+    } catch (error) {
+        console.error('変換中にエラーが発生しました:', error);
+    }
+}
+
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
-    const filename = generateFilename();
+    const filename = generateFilename('mp4'); // mp4用のファイル名生成
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
@@ -124,7 +153,7 @@ function downloadRecording(blob) {
 }
 
 // ファイル名を生成する関数
-function generateFilename() {
+function generateFilename(extension) {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -133,11 +162,8 @@ function generateFilename() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.${extension}`;
 }
-
-
-
 
 // 録画ボタンのイベントリスナーを追加
 recordButton.addEventListener('click', toggleRecording);
