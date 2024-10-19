@@ -4,13 +4,14 @@
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>スマホ2</title> 
-    <link rel="stylesheet" href="styles.css"> <!-- CSSファイルをリンク -->
+    <link rel="stylesheet" href="styles.css"> 
 </head> 
 <body> 
     <div class="menu">
+        <button id="toggleCameraButton">ON/OFF</button>
         <button id="startButton">録画開始</button>
         <button id="stopButton" disabled>録画停止</button>
-        <input type="range" id="opacitySlider" min="0" max="100" value="0"> <!-- スライダーの追加 --> 
+        <input type="range" id="opacitySlider" min="0" max="100" value="0"> 
     </div>
     <div class="container">
         <video id="preview" autoplay muted playsinline></video> 

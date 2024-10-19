@@ -2,10 +2,12 @@ const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const opacitySlider = document.getElementById('opacitySlider');
+const toggleCameraButton = document.getElementById('toggleCameraButton');  // カメラのオンオフ切り替えボタン
 
 let mediaRecorder;
 let recordedChunks = [];
 let currentStream;
+let cameraIsOn = false;  // カメラがオンかどうかの状態管理
 
 // 初めはpreviewを透明に設定
 preview.style.opacity = 0;
@@ -15,9 +17,6 @@ opacitySlider.addEventListener('input', () => {
     const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
     preview.style.opacity = opacityValue;  // 透過度を設定
 });
-
-// 初めから外カメラ（環境カメラ）を選んで表示
-startCamera();
 
 // カメラを開始する関数
 function startCamera(facingMode = "environment") {
@@ -33,17 +32,6 @@ function startCamera(facingMode = "environment") {
         currentStream = stream;
         preview.srcObject = stream;  // ストリームをvideoに設定
         preview.play();
-
-        // 全画面表示をリクエスト
-        if (preview.requestFullscreen) {
-            preview.requestFullscreen();
-        } else if (preview.mozRequestFullScreen) { // Firefox
-            preview.mozRequestFullScreen();
-        } else if (preview.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            preview.webkitRequestFullscreen();
-        } else if (preview.msRequestFullscreen) { // IE/Edge
-            preview.msRequestFullscreen();
-        }
 
         // 録画の設定
         mediaRecorder = new MediaRecorder(stream);
@@ -64,6 +52,23 @@ function startCamera(facingMode = "environment") {
     });
 }
 
+// カメラのオン・オフを切り替える関数
+function toggleCamera() {
+    if (cameraIsOn) {
+        // カメラがオンの場合、ストリームを停止してオフにする
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
+        preview.srcObject = null;  // プレビューをクリア
+        cameraIsOn = false;
+        toggleCameraButton.textContent = 'カメラをオンにする';  // ボタンの表示を変更
+    } else {
+        // カメラがオフの場合、カメラを開始してオンにする
+        startCamera();
+        cameraIsOn = true;
+        toggleCameraButton.textContent = 'カメラをオフにする';  // ボタンの表示を変更
+    }
+}
 
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
@@ -110,3 +115,6 @@ stopButton.addEventListener('click', () => {
         stopButton.disabled = true;
     }
 });
+
+// カメラオンオフボタンのイベントリスナーを追加
+toggleCameraButton.addEventListener('click', toggleCamera);
