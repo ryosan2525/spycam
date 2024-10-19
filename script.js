@@ -55,18 +55,22 @@ function startCamera(facingMode = "environment") {
 // カメラのオン・オフを切り替える関数
 function toggleCamera() {
     if (cameraIsOn) {
-        // カメラがオンの場合、ストリームを停止してオフにする
+        // カメラがオンの場合、録画中なら録画を停止してからストリームを停止
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop(); // 録画を停止
+        }
+
         if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
+            currentStream.getTracks().forEach(track => track.stop());  // ストリームを停止
         }
         preview.srcObject = null;  // プレビューをクリア
         cameraIsOn = false;
-        toggleCameraButton.textContent = 'カメラをオンにする';  // ボタンの表示を変更
+        toggleCameraButton.textContent = 'On';  // ボタンの表示を変更
     } else {
         // カメラがオフの場合、カメラを開始してオンにする
         startCamera();
         cameraIsOn = true;
-        toggleCameraButton.textContent = 'カメラをオフにする';  // ボタンの表示を変更
+        toggleCameraButton.textContent = 'Off';  // ボタンの表示を変更
     }
 }
 
