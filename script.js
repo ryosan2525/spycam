@@ -2,7 +2,9 @@ const preview = document.getElementById('preview');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const opacitySlider = document.getElementById('opacitySlider');
-const toggleCameraButton = document.getElementById('toggleCameraButton');  // カメラのオンオフ切り替えボタン
+const toggleCameraButton = document.getElementById('toggleCameraButton');
+const toggleMenuButton = document.getElementById('toggleMenuButton');  // メニュー表示/非表示ボタン
+const menu = document.getElementById('menu');
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -12,6 +14,18 @@ let cameraIsOn = true;  // カメラがオンかどうかの状態管理
 // 初めはpreviewを透明に設定
 preview.style.opacity = 0;
 startCamera();
+
+// メニューの表示/非表示を切り替える関数
+toggleMenuButton.addEventListener('click', () => {
+    if (menu.style.display === 'none') {
+        menu.style.display = 'block';  // メニューを表示
+        toggleMenuButton.textContent = 'メニュー非表示';  // ボタンのテキストを変更
+    } else {
+        menu.style.display = 'none';  // メニューを非表示
+        toggleMenuButton.textContent = 'メニュー表示';  // ボタンのテキストを変更
+    }
+});
+
 // スライダーの値を変更するたびに透過度を調整
 opacitySlider.addEventListener('input', () => {
     const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
@@ -55,9 +69,8 @@ function startCamera(facingMode = "environment") {
 // カメラのオン・オフを切り替える関数
 function toggleCamera() {
     if (cameraIsOn) {
-        // カメラがオンの場合、録画中なら録画を停止してからストリームを停止
         if (mediaRecorder && mediaRecorder.state === "recording") {
-            mediaRecorder.stop(); // 録画を停止
+            mediaRecorder.stop();  // 録画を停止
             startButton.disabled = false;
             stopButton.disabled = true;
         }
@@ -69,7 +82,6 @@ function toggleCamera() {
         cameraIsOn = false;
         toggleCameraButton.textContent = 'On';  // ボタンの表示を変更
     } else {
-        // カメラがオフの場合、カメラを開始してオンにする
         startCamera();
         cameraIsOn = true;
         toggleCameraButton.textContent = 'Off';  // ボタンの表示を変更
@@ -79,23 +91,23 @@ function toggleCamera() {
 // 録画をダウンロードする関数
 function downloadRecording(blob) {
     const url = URL.createObjectURL(blob);
-    const filename = generateFilename(); // ファイル名を生成
+    const filename = generateFilename();  // ファイル名を生成
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename; // ここでファイル名を設定
+    a.download = filename;  // ここでファイル名を設定
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
-        document.body.removeChild(a); // リンクを削除
-        URL.revokeObjectURL(url); // URLを解放
-    }, 100); // 少し待ってから削除
+        document.body.removeChild(a);  // リンクを削除
+        URL.revokeObjectURL(url);  // URLを解放
+    }, 100);  // 少し待ってから削除
 }
 
 // ファイル名を生成する関数
 function generateFilename() {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -107,7 +119,7 @@ function generateFilename() {
 // 録画開始
 startButton.addEventListener('click', () => {
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        mediaRecorder.start(); // 録画を開始
+        mediaRecorder.start();  // 録画を開始
         startButton.disabled = true;
         stopButton.disabled = false;
     }
