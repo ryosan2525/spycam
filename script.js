@@ -117,25 +117,27 @@ function toggleRecording() {
 
 // MP4に変換する関数
 async function convertWebMToMP4(blob) {
-    if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
+    try {
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        // Blobをffmpeg.jsに渡す
+        const webmData = await fetchFile(blob);
+        ffmpeg.FS('writeFile', 'input.webm', webmData);
+
+        // WebMファイルをMP4に変換
+        await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+
+        // MP4ファイルを取得
+        const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
+        const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+
+        // MP4ファイルをダウンロード
+        downloadRecording(mp4Blob);
+    } catch (error) {
+        alert('MP4への変換に失敗しました:', error);  // エラー情報をコンソールに出力
     }
-    
-    // Blobをffmpeg.jsに渡す
-    const webmData = await fetchFile(blob);
-    
-    // ffmpeg.jsにファイルをロード
-    ffmpeg.FS('writeFile', 'input.webm', webmData);
-
-    // WebMファイルをMP4に変換
-    await ffmpeg.run('-i', 'input.webm', 'output.mp4');
-
-    // MP4ファイルを取得
-    const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
-    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
-
-    // MP4ファイルをダウンロード
-    downloadRecording(mp4Blob, 'mp4');
 }
 
 // 録画をダウンロードする関数
@@ -144,14 +146,15 @@ function downloadRecording(blob) {
     const filename = generateFilename();
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+    a.download = filename;  // ここで適切なファイル名が設定されているか
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);  // URLのメモリ解放
     }, 100);
 }
+
 
 // ファイル名を生成する関数
 function generateFilename() {
