@@ -11,7 +11,7 @@ let cameraIsOn = true;  // カメラがオンかどうかの状態管理
 
 // 初めはpreviewを透明に設定
 preview.style.opacity = 0;
-
+startCamera();
 // スライダーの値を変更するたびに透過度を調整
 opacitySlider.addEventListener('input', () => {
     const opacityValue = opacitySlider.value / 100;  // スライダーの値を0~1に変換
