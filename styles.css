@@ -32,7 +32,6 @@ body {
     border: 1px solid #ccc; /* ボーダーを薄いグレーに */
     cursor: pointer; /* カーソルをポインターに */
     border-radius: 5px; /* ボタンの角を丸く */
-    font-size: 22px; /* ボタンのフォントサイズを指定 */
     line-height: 1; /* 行の高さを1に設定 */
     opacity: 0.9; /* ボタンも少し透明に */
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
@@ -45,7 +44,6 @@ body {
     border: none; /* ボーダーをなしに設定 */
     padding: 0; /* パディングをなしに設定 */
     cursor: pointer; /* カーソルをポインターに */
-    font-size: 22px; /* フォントサイズを指定 */
     line-height: 1; /* 行の高さを1に設定 */
     color: #333; /* アイコンの色を指定 */
     margin: 3px; /* ボタン間のマージンを小さく */
