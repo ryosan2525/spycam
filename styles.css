@@ -37,6 +37,7 @@ body {
     margin-left: 10px;
 }
 
+
 #toggleCameraButton,
 #recordButton {
     margin: 0 10px;
@@ -51,6 +52,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    z-index: 0;
 }
 
 video {
