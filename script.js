@@ -15,6 +15,26 @@ let isRecording = false;  // 録画中かどうかの状態を管理
 preview.style.opacity = 0;
 startCamera();
 
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+    
+    if (capabilities.zoom) {
+      const settings = track.getSettings();
+      track.applyConstraints({
+        advanced: [{ zoom: settings.zoom || 1 }]
+      });
+    } else {
+      alert("ズーム機能がサポートされていません");
+    }
+  })
+  .catch(error => alert("エラーが発生しました:", error));
+
+
+
+
+
 // メニューの表示/非表示を切り替える関数
 toggleMenuButton.addEventListener('click', () => {
     if (menu.style.display === 'none' || menu.style.display === '') {
@@ -135,9 +155,6 @@ function generateFilename() {
 
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}.webm`;
 }
-
-
-
 
 // 録画ボタンのイベントリスナーを追加
 recordButton.addEventListener('click', toggleRecording);
